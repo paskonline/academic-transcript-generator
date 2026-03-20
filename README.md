@@ -36,6 +36,7 @@
 *   Click **Import Results** and choose a CSV or Excel file.
 *   **Compulsory Headers**: Your file must include headers for **Module Name** and **Result**.
 *   **Optional Headers**: Year, Semester, and Credits can be included or adjusted manually after upload.
+*   **Testing**: If you want to see how the system works instantly, you can test it using our **[sample_import.csv](sample_import.csv)**. Simply download it and upload it via the Import button.
 
 ---
 
