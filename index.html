@@ -14,9 +14,10 @@
             --brand-accent: #2c5282;
             --bg-canvas: #f7fafc;
             --text-main: #000000;
-            --text-gray: #718096;
             --border-color: #cbd5e1;
             --white: #ffffff;
+            --success: #2f855a;
+            --warning: #ed8936;
         }
 
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
@@ -28,66 +29,70 @@
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000; 
         }
-        .navbar h1 { font-size: 1.2rem; margin: 0; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
+        .navbar h1 { font-size: 1.1rem; margin: 0; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
         .nav-btns { display: flex; gap: 8px; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .navbar { flex-direction: column; text-align: center; gap: 15px; }
             .nav-btns { width: 100%; justify-content: center; flex-wrap: wrap; }
-            .btn { flex: 1; min-width: 100px; font-size: 0.7rem !important; padding: 8px 4px !important; }
-            .btn-info-circle { min-width: 40px !important; flex: 0 !important; }
+            .btn { flex: 1; min-width: 140px; font-size: 0.7rem !important; }
         }
 
         .ui-container { max-width: 1100px; margin: 1.5rem auto; padding: 0 15px; }
 
-        /* Modals */
+        /* Professional Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .modal { background: var(--white); padding: 35px; border-radius: 4px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; color: #333; }
-        .modal h2, .modal h3 { font-family: 'Libre Baskerville', serif; color: var(--brand-primary); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-top: 25px; }
-        .modal h2:first-child { margin-top: 0; }
-        .modal p { line-height: 1.6; font-size: 0.95rem; margin-bottom: 12px; }
-        .modal strong { color: #000; }
+        .modal { background: var(--white); padding: 35px; border-radius: 6px; max-width: 750px; width: 100%; max-height: 90vh; overflow-y: auto; color: #333; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .modal h2 { font-family: 'Libre Baskerville', serif; color: var(--brand-primary); border-bottom: 3px solid var(--brand-accent); padding-bottom: 10px; margin-top: 0; font-size: 1.5rem; }
+        .modal h3 { font-size: 1.1rem; margin-top: 25px; color: var(--brand-primary); font-weight: 700; }
+        .modal p { line-height: 1.7; font-size: 0.95rem; margin-bottom: 15px; color: #4a5568; }
         
-        .formula-box { background: #f8fafc; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); font-family: 'Libre Baskerville', serif; font-size: 1.1rem; text-align: center; margin: 20px 0; font-style: italic; }
-        .tip-box { background: #fffde7; border-left: 4px solid #fbc02d; padding: 15px; font-size: 0.9rem; font-style: italic; margin-top: 20px; }
+        .step-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; gap: 15px; align-items: flex-start; }
+        .step-num { background: var(--brand-accent); color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
+        
+        .import-table-preview { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.8rem; }
+        .import-table-preview th { background: #edf2f7; padding: 8px; border: 1px solid #cbd5e1; text-align: left; }
+        .import-table-preview td { padding: 8px; border: 1px solid #cbd5e1; color: #718096; }
 
         /* Transcript Area */
-        #transcript-area { background: var(--white); padding: 50px; border: 1px solid var(--border-color); position: relative; }
-        .transcript-header { text-align: center; margin-bottom: 30px; border-bottom: 3px double var(--brand-primary); padding-bottom: 15px; }
-        .transcript-header h2 { font-family: 'Libre Baskerville', serif; font-size: 1.8rem; margin: 0; text-transform: uppercase; }
+        #transcript-area { background: var(--white); padding: 60px 50px; border: 1px solid var(--border-color); position: relative; }
+        .transcript-header { text-align: center; margin-bottom: 40px; border-bottom: 3px double var(--brand-primary); padding-bottom: 20px; }
+        .transcript-header h2 { font-family: 'Libre Baskerville', serif; font-size: 1.8rem; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* Personal Data Styling */
-        .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 40px; margin-bottom: 30px; }
-        .profile-item { display: flex; flex-direction: column; border-bottom: 1px solid #edf2f7; padding: 4px 0; }
-        .profile-label { font-weight: 800; font-size: 0.75rem; color: #000; text-transform: uppercase; margin-bottom: 2px; }
-        .profile-val { font-size: 0.85rem; border: none; background: transparent; font-weight: 500; color: #4a5568; width: 100%; }
-        .profile-val::placeholder { color: rgba(0, 0, 0, 0.25); font-weight: 400; }
+        /* Profile Details */
+        .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 50px; margin-bottom: 40px; }
+        .profile-item { display: flex; flex-direction: column; border-bottom: 1px solid #edf2f7; padding: 6px 0; }
+        .profile-label { font-weight: 800; font-size: 0.75rem; color: #000; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .profile-val { font-size: 0.9rem; border: none; background: transparent; font-weight: 500; color: #2d3748; width: 100%; padding: 0; }
+        .profile-val::placeholder { color: rgba(0, 0, 0, 0.2); font-weight: 400; font-style: italic; }
 
         /* Table Records */
-        .table-wrap { overflow-x: auto; }
-        .records-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 650px; }
-        .records-table th { background: #f8fafc; border: 1px solid var(--border-color); padding: 10px; font-size: 0.7rem; text-transform: uppercase; color: #000; }
-        .records-table td { border: 1px solid var(--border-color); padding: 8px; font-size: 0.85rem; }
-        .year-divider td { border-top: 4px double var(--border-color) !important; }
-        .records-table input, .records-table select { width: 100%; border: none; background: transparent; font-family: inherit; }
+        .table-wrap { overflow-x: auto; margin-top: 20px; }
+        .records-table { width: 100%; border-collapse: collapse; }
+        .records-table th { background: #f8fafc; border: 1px solid var(--border-color); padding: 12px 10px; font-size: 0.75rem; text-transform: uppercase; color: #000; font-weight: 800; }
+        .records-table td { border: 1px solid var(--border-color); padding: 10px; font-size: 0.85rem; }
+        .year-divider td { border-top: 5px double var(--border-color) !important; }
+        .records-table input, .records-table select { width: 100%; border: none; background: transparent; font-family: inherit; font-size: inherit; color: inherit; }
 
-        /* Summary & Footer */
-        .summary-box { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--brand-primary); padding-top: 20px; }
+        /* Summary Box */
+        .summary-box { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--brand-primary); padding-top: 25px; }
         .summary-item { text-align: center; }
-        .summary-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #000; }
-        .summary-val { font-size: 1.3rem; font-weight: 800; color: #000; }
+        .summary-label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #000; margin-bottom: 5px; }
+        .summary-val { font-size: 1.5rem; font-weight: 800; color: #000; }
 
-        .disclaimer { margin-top: 50px; font-size: 0.65rem; font-style: italic; color: #a0aec0; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
+        .disclaimer { margin-top: 60px; font-size: 0.7rem; font-style: italic; color: #a0aec0; text-align: center; border-top: 1px solid #eee; padding-top: 15px; line-height: 1.5; }
 
-        /* UI Buttons */
-        .action-bar { margin: 1rem 0; display: flex; gap: 10px; justify-content: flex-end; }
-        .btn { padding: 10px 16px; cursor: pointer; font-weight: 600; border-radius: 4px; border: 1px solid transparent; font-size: 0.8rem; transition: 0.2s; }
+        /* Buttons */
+        .action-bar { margin: 1.5rem 0; display: flex; gap: 12px; justify-content: flex-end; }
+        .btn { padding: 12px 20px; cursor: pointer; font-weight: 700; border-radius: 4px; border: 1px solid transparent; font-size: 0.85rem; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-dark { background: var(--brand-primary); color: white; }
-        .btn-import { background: #ed8936; color: white; }
-        .btn-pdf { background: #2f855a; color: white; }
-        .btn-add { background: #f7fafc; color: var(--brand-accent); width: 100%; margin-top: 10px; border: 1px dashed var(--border-color); }
+        .btn-import { background: var(--warning); color: white; }
+        .btn-pdf { background: var(--success); color: white; }
+        .btn-outline { background: transparent; border: 1px solid white; color: white; }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .btn-add { background: #f7fafc; color: var(--brand-accent); width: 100%; margin-top: 15px; border: 1px dashed var(--border-color); }
+        .btn-add:hover { background: #edf2f7; border-color: var(--brand-accent); }
 
-        @media (max-width: 768px) { .profile-grid { grid-template-columns: 1fr; } .summary-box { grid-template-columns: 1fr; gap: 20px; } #transcript-area { padding: 25px; } }
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -95,102 +100,114 @@
 
 <input type="file" id="fileInput" style="display:none;" accept=".csv, .xlsx, .xls" onchange="handleFile(event)">
 
-<!-- Instruction Modal -->
 <div class="modal-overlay" id="instrModal">
     <div class="modal">
-        <h2>System Usage Instructions</h2>
-        <p>Follow these steps to generate your high-fidelity academic record:</p>
-        <ul style="font-size: 0.95rem; line-height: 1.8;">
-            <li><strong>Personal Profile:</strong> Fill in the header details. Topics are in bold black; placeholders show examples.</li>
-            <li><strong>Manual Entry:</strong> Click "Add New Module Row" to enter subjects one by one.</li>
-            <li><strong>Auto-Sorting:</strong> Simply type your Year (e.g., 1 or Y1) and Semester. The table will re-order itself automatically when you click away.</li>
-            <li><strong>Year Dividers:</strong> A formal double-line divider will appear automatically whenever a new academic year begins.</li>
-            <li><strong>Export:</strong> Use the "Download Transcript" button to generate a professional A4 PDF.</li>
-        </ul>
-        <button class="btn btn-dark" style="width:100%; margin-top:20px;" onclick="closeModal('instrModal')">Get Started</button>
+        <h2>User Guide: How to generate your transcript</h2>
+        <p>Follow these simple steps to create a professional academic record in minutes.</p>
+        
+        <div class="step-card">
+            <div class="step-num">1</div>
+            <div>
+                <strong>Complete your Profile:</strong> Fill in your name, university, and degree details. This information appears at the top of your final document.
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">2</div>
+            <div>
+                <strong>Enter Results:</strong> Use the <strong>"+ Add New Module Row"</strong> button to enter your grades manually, or use the <strong>"Import"</strong> button to upload an existing file.
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">3</div>
+            <div>
+                <strong>Automatic Organization:</strong> Simply type the academic year (e.g., Year 1) and semester. The system will automatically sort your modules and add professional year-dividers.
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-num">4</div>
+            <div>
+                <strong>Download PDF:</strong> Once satisfied, click <strong>"Download Transcript"</strong> to generate a high-quality A4 document ready for printing or sharing.
+            </div>
+        </div>
+
+        <button class="btn btn-dark" style="width:100%; margin-top:10px;" onclick="closeModal('instrModal')">I'm ready to start</button>
     </div>
 </div>
 
-<!-- Import Modal -->
 <div class="modal-overlay" id="importModal">
     <div class="modal">
-        <h2>Import Data Instructions</h2>
-        <p>To bulk-upload your academic results, your Excel or CSV file must follow this structure:</p>
-        <div style="background: #f1f5f9; padding: 15px; border-radius: 4px; margin: 15px 0;">
-            <p style="font-family: monospace; font-size: 0.85rem; margin:0;">
-                Headers (Row 1): <strong>Year, Semester, Module Name, Result, Credits</strong>
-            </p>
-        </div>
-        <ul style="font-size: 0.9rem; line-height: 1.6;">
-            <li><strong>Module Name & Result:</strong> Mandatory fields.</li>
-            <li><strong>Year & Semester:</strong> Highly recommended for automatic sorting and year-dividers.</li>
-            <li><strong>Credits:</strong> Optional (system defaults to 3 credits if left blank).</li>
+        <h2>Bulk Import Guide</h2>
+        <p>Save time by importing your results from an Excel (.xlsx) or CSV file. To ensure a successful upload, your file <strong>must</strong> include a header row with these exact names:</p>
+        
+        <table class="import-table-preview">
+            <thead>
+                <tr><th>Year</th><th>Semester</th><th>Module Name</th><th>Result</th><th>Credits</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Year 1</td><td>Sem 1</td><td>Microeconomics</td><td>A</td><td>3</td></tr>
+                <tr><td>Year 1</td><td>Sem 1</td><td>Management</td><td>B+</td><td>3</td></tr>
+            </tbody>
+        </table>
+
+        <ul style="font-size: 0.9rem; line-height: 1.8; color: #4a5568;">
+            <li><strong>Module Name & Result:</strong> These are required to calculate your GPA.</li>
+            <li><strong>Year & Semester:</strong> Used to group your modules and sort them chronologically.</li>
+            <li><strong>Result Format:</strong> Use standard letters (A+, A, B, etc.).</li>
         </ul>
-        <div style="display: flex; gap: 10px; margin-top: 25px;">
-            <button class="btn btn-import" style="flex: 1;" onclick="document.getElementById('fileInput').click(); closeModal('importModal');">Choose File</button>
-            <button class="btn btn-dark" style="flex: 1;" onclick="closeModal('importModal')">Cancel</button>
+
+        <div style="display: flex; gap: 12px; margin-top: 25px;">
+            <button class="btn btn-import" style="flex: 2;" onclick="document.getElementById('fileInput').click(); closeModal('importModal');">Select & Upload File</button>
+            <button class="btn btn-dark" style="flex: 1;" onclick="closeModal('importModal')">Back</button>
         </div>
     </div>
 </div>
 
-<!-- GPA ? Modal -->
 <div class="modal-overlay" id="gpaInfoModal">
     <div class="modal">
-        <h2>What is GPA?</h2>
-        <p>The Grade Point Average (GPA) is a standardized numerical representation of your academic performance. Instead of looking at individual percentages, the GPA condenses your results into a single figure—typically on a 4.0 scale. It reflects the average of the "grade points" you earn in each course, weighted by the number of credit hours that course carries.</p>
+        <h2>Learn more about GPA</h2>
+        
+        <h3>What is GPA?</h3>
+        <p>The Grade Point Average (GPA) is a standardized numerical representation of your academic performance. It reflects the average of the "grade points" you earn in each course, weighted by the number of credit hours that course carries.</p>
 
         <h3>The Importance of GPA</h3>
-        <p>Your GPA is more than just a number; it is a key metric used by educational institutions and employers worldwide to gauge your consistency and dedication.</p>
-        <ul style="font-size: 0.9rem;">
-            <li><strong>Academic Standing:</strong> It determines if you are eligible for Dean’s List honors, scholarships, or specialized research circles.</li>
-            <li><strong>Class Awards:</strong> In Sri Lanka, your final GPA determines your degree classification (e.g., First Class, Second Upper, or Second Lower).</li>
-            <li><strong>Postgraduate Opportunities:</strong> If you plan to pursue an MBA or a Master’s degree later, your undergraduate GPA is the primary filter used for admissions.</li>
-        </ul>
+        <p>Your GPA is a key metric used by employers and universities worldwide to gauge consistency. In Sri Lanka, it determines your degree classification (First Class, Second Upper, etc.) and is a primary filter for postgraduate admissions.</p>
 
-        <h3>How is GPA Calculated?</h3>
-        <p>The calculation follows a "weighted average" logic. A 4-credit core module affects your GPA more than a 2-credit elective.</p>
-        <div class="formula-box">
+        <h3>How is it Calculated?</h3>
+        <p>The calculation follows a "weighted average" logic. A 4-credit module affects your score more than a 2-credit elective.</p>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); font-family: 'Libre Baskerville', serif; font-size: 1.1rem; text-align: center; margin: 15px 0; font-style: italic;">
             GPA = Σ (Grade Points × Credits) / Total Credits
         </div>
-        <ol style="font-size: 0.9rem;">
-            <li><strong>Assign Grade Points:</strong> Letter grades (A, B, C) are converted to numerical values (e.g., A = 4.0).</li>
-            <li><strong>Calculate Quality Points:</strong> Multiply Grade Points by Credits for each module.</li>
-            <li><strong>Summation:</strong> Add up all Quality Points and attempted Credits.</li>
-            <li><strong>Division:</strong> Divide Total Quality Points by Total Credits.</li>
-        </ol>
 
-        <h3>Why is it Necessary for Us?</h3>
-        <p>As students balancing full-time work, professional exams, and university lectures, tracking your GPA is essential for strategic planning.</p>
-        <ul style="font-size: 0.9rem;">
-            <li><strong>Goal Setting:</strong> Calculate exactly what grades you need in your final year to reach your target classification.</li>
-            <li><strong>Career Readiness:</strong> In Finance and Accounting, a strong GPA serves as a "first-look" indicator of your technical discipline.</li>
-        </ul>
-
-        <div class="tip-box">
-            <strong>💡 Pro-Tip:</strong> "Don't wait until the end of the year to see your results. Use this calculator to simulate your 'target grades' for upcoming exams so you can manage your workload effectively."
+        <div style="background: #fffde7; border-left: 4px solid #fbc02d; padding: 15px; font-size: 0.9rem; font-style: italic; margin-top: 25px;">
+            <strong>💡 Pro-Tip:</strong> "Don't wait until the end of the year. Use this calculator to simulate 'target grades' for upcoming exams so you can manage your workload effectively."
         </div>
-        <button class="btn btn-dark" style="width:100%; margin-top:25px;" onclick="closeModal('gpaInfoModal')">Close</button>
+        
+        <button class="btn btn-dark" style="width:100%; margin-top:25px;" onclick="closeModal('gpaInfoModal')">Close Guide</button>
     </div>
 </div>
 
-<!-- Grading Modal -->
 <div class="modal-overlay" id="gradeModal">
     <div class="modal">
-        <h2>Grading System</h2>
-        <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 15px;"><input type="checkbox" id="lockScale" checked onchange="toggleGradeLock()"> Lock Default System</label>
+        <h2>Grading System Settings</h2>
+        <p>Customise the numerical values for each letter grade below.</p>
+        <label style="display: flex; align-items: center; gap: 10px; font-weight: 700; margin-bottom: 20px; cursor: pointer;">
+            <input type="checkbox" id="lockScale" checked onchange="toggleGradeLock()" style="width:18px; height:18px;"> Lock Default System
+        </label>
         <table style="width:100%; border-collapse: collapse;"><tbody id="gradeTableBody"></tbody></table>
-        <button class="btn btn-dark" style="width:100%; margin-top: 15px;" onclick="closeModal('gradeModal')">Apply</button>
+        <button class="btn btn-dark" style="width:100%; margin-top: 20px;" onclick="closeModal('gradeModal')">Save Changes</button>
     </div>
 </div>
 
-<!-- Navbar -->
 <nav class="navbar no-print">
     <h1>Transcript Generator</h1>
     <div class="nav-btns">
         <button class="btn btn-import" onclick="openModal('importModal')">Import Results</button>
-        <button class="btn" style="background:transparent; color:white; border:1px solid white;" onclick="openModal('gradeModal')">Grading System</button>
-        <button class="btn" style="background:transparent; color:white; border:1px solid white;" onclick="openModal('instrModal')">Instructions</button>
-        <button class="btn btn-dark btn-info-circle" style="border-radius: 50%; font-size: 1rem;" onclick="openModal('gpaInfoModal')">?</button>
+        <button class="btn btn-outline" onclick="openModal('gradeModal')">Grading System</button>
+        <button class="btn btn-outline" onclick="openModal('instrModal')">Instructions</button>
+        <button class="btn btn-dark" style="border: 1px solid #4a5568;" onclick="openModal('gpaInfoModal')">Learn more about GPA</button>
     </div>
 </nav>
 
@@ -206,14 +223,14 @@
         </div>
 
         <div class="profile-grid">
-            <div class="profile-item"><span class="profile-label">Student Name:</span><input class="profile-val" id="p-name" placeholder="Herath Mudiyanselage Kasun Nirmal Herath"></div>
-            <div class="profile-item"><span class="profile-label">Student ID:</span><input class="profile-val" placeholder="DD/AF/22"></div>
-            <div class="profile-item"><span class="profile-label">Intake/Batch:</span><input class="profile-val" placeholder="22/2"></div>
-            <div class="profile-item"><span class="profile-label">Degree:</span><input class="profile-val" placeholder="BSc (Hons) Accounting and Finance"></div>
-            <div class="profile-item"><span class="profile-label">Department:</span><input class="profile-val" placeholder="Department of Accounting"></div>
-            <div class="profile-item"><span class="profile-label">Faculty:</span><input class="profile-val" placeholder="Faculty of Business"></div>
-            <div class="profile-item"><span class="profile-label">Offered Institute:</span><input class="profile-val" placeholder="University of Kelaniya"></div>
-            <div class="profile-item"><span class="profile-label">Granted Authority:</span><input class="profile-val" placeholder="UGC Sri Lanka"></div>
+            <div class="profile-item"><span class="profile-label">Student Name:</span><input class="profile-val" id="p-name" placeholder="e.g. Herath Mudiyanselage Kasun Nirmal Herath"></div>
+            <div class="profile-item"><span class="profile-label">Student ID (USSID):</span><input class="profile-val" placeholder="e.g. DD/AF/22"></div>
+            <div class="profile-item"><span class="profile-label">Intake/Batch:</span><input class="profile-val" placeholder="e.g. 22/2"></div>
+            <div class="profile-item"><span class="profile-label">Degree Program:</span><input class="profile-val" placeholder="e.g. BSc (Hons) Accounting and Finance"></div>
+            <div class="profile-item"><span class="profile-label">Department:</span><input class="profile-val" placeholder="e.g. Department of Accounting"></div>
+            <div class="profile-item"><span class="profile-label">Faculty:</span><input class="profile-val" placeholder="e.g. Faculty of Business"></div>
+            <div class="profile-item"><span class="profile-label">Offered Institute:</span><input class="profile-val" placeholder="e.g. University of Kelaniya, Sri Lanka"></div>
+            <div class="profile-item"><span class="profile-label">Granted Authority:</span><input class="profile-val" placeholder="e.g. UGC Sri Lanka"></div>
         </div>
 
         <div class="table-wrap">
@@ -236,11 +253,13 @@
 
         <div class="summary-box">
             <div class="summary-item"><span class="summary-label">Total Credit Earned</span><span class="summary-val" id="res-credits">0</span></div>
-            <div class="summary-item"><span class="summary-label">Cumulative GPA</span><span class="summary-val" id="res-gpa">0.0000</span><div id="res-class" style="font-size:0.6rem; font-weight:700; color:var(--brand-accent);">-</div></div>
+            <div class="summary-item"><span class="summary-label">Cumulative GPA</span><span class="summary-val" id="res-gpa">0.0000</span><div id="res-class" style="font-size:0.65rem; font-weight:800; color:var(--brand-accent); margin-top:5px;">-</div></div>
             <div class="summary-item"><span class="summary-label">Total Quality Points</span><span class="summary-val" id="res-qp">0.0</span></div>
         </div>
 
-        <div class="disclaimer">Document generated under the request of <span id="disclaim-name">Kasun Nirmal Herath</span>.</div>
+        <div class="disclaimer">
+            This document is not an official university transcript. It has been generated under the request of <span id="disclaim-name">[Student Name]</span> by an online transcript generator for academic planning purposes only.
+        </div>
     </div>
 </div>
 
@@ -260,7 +279,7 @@
         const keys = Object.keys(gradingScale);
         for(let i=0; i<keys.length; i+=2) {
             const k1 = keys[i], k2 = keys[i+1] || "";
-            body.innerHTML += `<tr><td style="border:1px solid #cbd5e1; padding:5px; font-weight:600;">${k1}</td><td style="border:1px solid #cbd5e1; padding:5px;"><input type="number" step="0.1" value="${gradingScale[k1]}" oninput="gradingScale['${k1}']=parseFloat(this.value);calc();" disabled style="width:45px;"></td><td style="border:1px solid #cbd5e1; padding:5px; font-weight:600;">${k2}</td><td style="border:1px solid #cbd5e1; padding:5px;">${k2 ? `<input type="number" step="0.1" value="${gradingScale[k2]}" oninput="gradingScale['${k2}']=parseFloat(this.value);calc();" disabled style="width:45px;">` : ''}</td></tr>`;
+            body.innerHTML += `<tr><td style="border:1px solid #cbd5e1; padding:8px; font-weight:700;">${k1}</td><td style="border:1px solid #cbd5e1; padding:8px;"><input type="number" step="0.1" value="${gradingScale[k1]}" oninput="gradingScale['${k1}']=parseFloat(this.value);calc();" disabled style="width:50px; text-align:center;"></td><td style="border:1px solid #cbd5e1; padding:8px; font-weight:700;">${k2}</td><td style="border:1px solid #cbd5e1; padding:8px;">${k2 ? `<input type="number" step="0.1" value="${gradingScale[k2]}" oninput="gradingScale['${k2}']=parseFloat(this.value);calc();" disabled style="width:50px; text-align:center;">` : ''}</td></tr>`;
         }
     }
 
@@ -268,12 +287,12 @@
         const tr = document.createElement('tr');
         tr.className = "module-row";
         tr.innerHTML = `
-            <td><input type="text" class="year-in" value="${data.Year || ''}" placeholder="Y1" onblur="sortAndCalc()"></td>
-            <td><input type="text" class="sem-in" value="${data.Semester || ''}" placeholder="S1" onblur="sortAndCalc()"></td>
-            <td><input type="text" value="${data.Module || ''}" placeholder="Module"></td>
+            <td><input type="text" class="year-in" value="${data.Year || ''}" placeholder="e.g. Year 1" onblur="sortAndCalc()"></td>
+            <td><input type="text" class="sem-in" value="${data.Semester || ''}" placeholder="e.g. Sem 1" onblur="sortAndCalc()"></td>
+            <td><input type="text" value="${data.Module || ''}" placeholder="Module Name"></td>
             <td><select class="grade-sel" onchange="calc()">${Object.keys(gradingScale).map(k => `<option value="${k}" ${data.Result === k ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
             <td><input type="number" class="cred-in" value="${data.Credits || 3}" oninput="calc()"></td>
-            <td class="gp-cell" style="text-align:center; font-weight:700;">0.0</td>
+            <td class="gp-cell" style="text-align:center; font-weight:800;">0.0</td>
         `;
         document.getElementById('recordBody').appendChild(tr);
         calc();
@@ -334,13 +353,13 @@
         document.getElementById('res-class').innerText = cls;
     }
 
-    document.getElementById('p-name').addEventListener('input', e => document.getElementById('disclaim-name').innerText = e.target.value || "Kasun Nirmal Herath");
+    document.getElementById('p-name').addEventListener('input', e => document.getElementById('disclaim-name').innerText = e.target.value || "[Student Name]");
 
     function generatePDF() {
         const el = document.getElementById('transcript-area');
         const btn = document.getElementById('add-btn');
         btn.style.display = 'none';
-        html2pdf().set({ margin: 0.3, filename: 'Academic_Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
+        html2pdf().set({ margin: 0.3, filename: 'Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
     }
 
     initGradingUI();
