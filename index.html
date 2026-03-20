@@ -14,7 +14,6 @@
             --brand-accent: #2c5282;
             --bg-canvas: #f7fafc;
             --text-main: #000000;
-            --text-gray: #718096;
             --border-color: #cbd5e1;
             --white: #ffffff;
         }
@@ -22,10 +21,36 @@
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-canvas); color: var(--text-main); margin: 0; padding: 0; }
 
-        /* Navigation */
-        .navbar { background: var(--brand-primary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .navbar h1 { font-size: 1.1rem; margin: 0; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
-        .nav-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        /* Navigation - Fixed for Mobile */
+        .navbar { 
+            background: var(--brand-primary); 
+            color: white; 
+            padding: 1.2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .navbar h1 { font-size: 1.2rem; margin: 0; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
+        .nav-btns { display: flex; gap: 8px; }
+
+        /* Mobile Adjustments for Header */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            .navbar h1 { font-size: 1.1rem; }
+            .nav-btns {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .btn { flex: 1; min-width: 120px; font-size: 0.75rem !important; padding: 10px 5px !important; }
+        }
 
         .ui-container { max-width: 1100px; margin: 1.5rem auto; padding: 0 15px; }
 
@@ -48,9 +73,9 @@
         .profile-val { font-size: 0.85rem; border: none; background: transparent; font-weight: 500; color: #4a5568; width: 100%; }
         .profile-val::placeholder { color: rgba(0, 0, 0, 0.3); font-weight: 400; }
 
-        /* Records Table */
+        /* Table Records */
         .table-wrap { overflow-x: auto; }
-        .records-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .records-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 650px; }
         .records-table th { background: #f8fafc; border: 1px solid var(--border-color); padding: 10px; font-size: 0.7rem; text-transform: uppercase; }
         .records-table td { border: 1px solid var(--border-color); padding: 8px; font-size: 0.85rem; }
         .year-divider td { border-top: 4px double var(--border-color) !important; }
@@ -67,13 +92,17 @@
 
         /* UI Buttons */
         .action-bar { margin: 1rem 0; display: flex; gap: 10px; justify-content: flex-end; }
-        .btn { padding: 8px 16px; cursor: pointer; font-weight: 600; border-radius: 4px; border: 1px solid transparent; font-size: 0.8rem; transition: 0.2s; }
+        .btn { padding: 10px 16px; cursor: pointer; font-weight: 600; border-radius: 4px; border: 1px solid transparent; font-size: 0.8rem; transition: 0.2s; }
         .btn-dark { background: var(--brand-primary); color: white; }
         .btn-import { background: #ed8936; color: white; }
         .btn-pdf { background: #2f855a; color: white; }
         .btn-add { background: #f7fafc; color: var(--brand-accent); width: 100%; margin-top: 10px; border: 1px dashed var(--border-color); }
 
-        @media (max-width: 768px) { .profile-grid { grid-template-columns: 1fr; } .summary-box { grid-template-columns: 1fr; gap: 20px; } }
+        @media (max-width: 768px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .summary-box { grid-template-columns: 1fr; gap: 20px; }
+            #transcript-area { padding: 25px; }
+        }
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -81,44 +110,33 @@
 
 <input type="file" id="fileInput" style="display:none;" accept=".csv, .xlsx, .xls" onchange="handleFile(event)">
 
+<!-- Modals same as before -->
 <div class="modal-overlay" id="instrModal">
     <div class="modal">
         <h2>System Guidelines & Formulas</h2>
         <div style="font-size: 0.9rem; line-height: 1.6;">
             <p><strong>1. Grade:</strong> The specific letter grade earned for each module.</p>
-            <p><strong>2. Credit:</strong> Verify module credits via your degree handbook or department.</p>
-            <p><strong>3. Grade PTS:</strong> Represents Quality Points (Grade Value × Credits).</p>
-            <p><strong>4. Grading System:</strong> Customise the GPA values via the navbar menu.</p>
-            
-            <div class="formula-box">
-                • Total Credit Earned = Σ(Credits)<br>
-                • Total Quality Points = Σ(Grade Points × Credits)<br>
-                • Cumulative GPA = Total Quality Points / Total Credit Earned
-            </div>
-
-            <p><strong>Note:</strong> Data is processed locally. We do not store your information.</p>
-            <p style="font-size: 0.75rem; color: #e53e3e;"><strong>Disclaimer:</strong> This document is generated for academic planning purposes only.</p>
+            <p><strong>2. Credit:</strong> Verify module credits via your handbook or department.</p>
+            <p><strong>3. Grade PTS:</strong> Quality Points (Grade Value × Credits).</p>
+            <div class="formula-box">• Total Credit Earned = Σ(Credits)<br>• Total Quality Points = Σ(Grade Points × Credits)<br>• Cumulative GPA = Total Quality Points / Total Credit Earned</div>
+            <p style="font-size: 0.75rem; color: #e53e3e;"><strong>Disclaimer:</strong> Generated for academic planning only.</p>
         </div>
-        <button class="btn btn-dark" style="width:100%; margin-top:20px;" onclick="closeModal('instrModal')">Acknowledge & Enter</button>
+        <button class="btn btn-dark" style="width:100%; margin-top:20px;" onclick="closeModal('instrModal')">Close</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="importModal">
     <div class="modal">
         <h2>Import Instructions</h2>
-        <p style="font-size: 0.95rem;">To bulk upload your results, ensure your Excel or CSV file contains a <strong>Header Row</strong> with the following names:</p>
+        <p style="font-size: 0.95rem;">Ensure your file has a <strong>Header Row</strong> with these names:</p>
         <ul style="font-size: 0.9rem; color: #444;">
             <li><strong>Module Name</strong> (Compulsory)</li>
-            <li><strong>Result</strong> (Compulsory - e.g., A, B+, C)</li>
-            <li><strong>Year</strong> (Optional)</li>
-            <li><strong>Semester</strong> (Optional)</li>
+            <li><strong>Result</strong> (Compulsory - e.g. A, B+)</li>
+            <li><strong>Year</strong> & <strong>Semester</strong> (Optional)</li>
             <li><strong>Credits</strong> (Optional - defaults to 3)</li>
         </ul>
-        <div style="background: #fff8f1; padding: 10px; border: 1px solid #fbd38d; border-radius: 4px; font-size: 0.85rem; margin-bottom: 20px;">
-            💡 <strong>Tip:</strong> The system will automatically sort your data by Year and Semester after upload.
-        </div>
         <div style="display: flex; gap: 10px;">
-            <button class="btn btn-import" style="flex: 1;" onclick="document.getElementById('fileInput').click(); closeModal('importModal');">Choose File & Upload</button>
+            <button class="btn btn-import" style="flex: 1;" onclick="document.getElementById('fileInput').click(); closeModal('importModal');">Upload File</button>
             <button class="btn btn-dark" style="flex: 1;" onclick="closeModal('importModal')">Cancel</button>
         </div>
     </div>
@@ -126,17 +144,18 @@
 
 <div class="modal-overlay" id="gradeModal">
     <div class="modal">
-        <h2>Grading System Management</h2>
+        <h2>Grading System</h2>
         <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; margin-bottom: 15px;">
             <input type="checkbox" id="lockScale" checked onchange="toggleGradeLock()"> Lock Default System
         </label>
-        <table style="width:100%; border-collapse: collapse;" id="gradeTable">
+        <table style="width:100%; border-collapse: collapse;">
             <tbody id="gradeTableBody"></tbody>
         </table>
-        <button class="btn btn-dark" style="width:100%; margin-top: 15px;" onclick="closeModal('gradeModal')">Save & Apply</button>
+        <button class="btn btn-dark" style="width:100%; margin-top: 15px;" onclick="closeModal('gradeModal')">Apply</button>
     </div>
 </div>
 
+<!-- Header -->
 <nav class="navbar no-print">
     <h1>Transcript Generator</h1>
     <div class="nav-btns">
@@ -195,9 +214,7 @@
             <div class="summary-item"><span class="summary-label">Total Quality Points</span><span class="summary-val" id="res-qp">0.0</span></div>
         </div>
 
-        <div class="disclaimer">
-            This document is not an official university transcript. It has been generated under the request of <span id="disclaim-name">Kasun Nirmal Herath</span> by an online transcript generator.
-        </div>
+        <div class="disclaimer">This document is not an official university transcript. Generated under the request of <span id="disclaim-name">Kasun Nirmal Herath</span>.</div>
     </div>
 </div>
 
@@ -219,10 +236,10 @@
         for(let i=0; i<keys.length; i+=2) {
             const k1 = keys[i], k2 = keys[i+1] || "";
             body.innerHTML += `<tr>
-                <td style="border:1px solid #cbd5e1; padding:8px;">${k1}</td>
-                <td style="border:1px solid #cbd5e1; padding:8px;"><input type="number" step="0.1" value="${gradingScale[k1]}" oninput="gradingScale['${k1}']=parseFloat(this.value);calc();" disabled style="width:60px;"></td>
-                <td style="border:1px solid #cbd5e1; padding:8px;">${k2}</td>
-                <td style="border:1px solid #cbd5e1; padding:8px;">${k2 ? `<input type="number" step="0.1" value="${gradingScale[k2]}" oninput="gradingScale['${k2}']=parseFloat(this.value);calc();" disabled style="width:60px;">` : ''}</td>
+                <td style="border:1px solid #cbd5e1; padding:8px; font-size:0.8rem;">${k1}</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;"><input type="number" step="0.1" value="${gradingScale[k1]}" oninput="gradingScale['${k1}']=parseFloat(this.value);calc();" disabled style="width:50px;"></td>
+                <td style="border:1px solid #cbd5e1; padding:8px; font-size:0.8rem;">${k2}</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${k2 ? `<input type="number" step="0.1" value="${gradingScale[k2]}" oninput="gradingScale['${k2}']=parseFloat(this.value);calc();" disabled style="width:50px;">` : ''}</td>
             </tr>`;
         }
     }
@@ -231,9 +248,9 @@
         const tr = document.createElement('tr');
         tr.className = "module-row";
         tr.innerHTML = `
-            <td><input type="text" class="year-in" value="${data.Year || ''}" placeholder="Year 1" oninput="calc()"></td>
-            <td><input type="text" value="${data.Semester || ''}" placeholder="Semester 1"></td>
-            <td><input type="text" value="${data.Module || ''}" placeholder="Module Name"></td>
+            <td><input type="text" class="year-in" value="${data.Year || ''}" placeholder="..." oninput="calc()"></td>
+            <td><input type="text" value="${data.Semester || ''}" placeholder="..."></td>
+            <td><input type="text" value="${data.Module || ''}" placeholder="..."></td>
             <td><select class="grade-sel" onchange="calc()">${Object.keys(gradingScale).map(k => `<option value="${k}" ${data.Result === k ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
             <td><input type="number" class="cred-in" value="${data.Credits || 3}" oninput="calc()"></td>
             <td class="gp-cell" style="text-align:center; font-weight:700;">0.0</td>
@@ -246,22 +263,18 @@
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = function(evt) {
-            const data = evt.target.result;
-            const workbook = XLSX.read(data, {type: 'binary'});
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            const json = XLSX.utils.sheet_to_json(sheet);
-
+            const workbook = XLSX.read(evt.target.result, {type: 'binary'});
+            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
             const mapped = json.map(row => {
                 const find = (arr) => Object.keys(row).find(k => arr.some(a => k.toLowerCase().includes(a.toLowerCase())));
                 return {
                     Year: row[find(['year', 'yr'])] || '',
                     Semester: row[find(['semester', 'sem', 's '])] || '',
-                    Module: row[find(['module', 'subject', 'course'])] || 'Unknown Module',
+                    Module: row[find(['module', 'subject', 'course'])] || 'Unknown',
                     Result: String(row[find(['result', 'grade'])] || 'F').trim().toUpperCase(),
                     Credits: parseFloat(row[find(['credit'])] || 3)
                 };
             }).sort((a,b) => String(a.Year).localeCompare(String(b.Year)) || String(a.Semester).localeCompare(String(b.Semester)));
-
             document.getElementById('recordBody').innerHTML = '';
             mapped.forEach(addRow);
         };
