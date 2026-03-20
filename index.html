@@ -6,6 +6,7 @@
     <title>Transcript Generator | Professional Academic Systems</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
         :root {
@@ -19,124 +20,67 @@
         }
 
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-canvas);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-canvas); color: var(--text-main); margin: 0; padding: 0; }
 
         /* Navigation */
-        .navbar {
-            background: var(--brand-primary);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-        }
+        .navbar { background: var(--brand-primary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .navbar h1 { font-size: 1.1rem; margin: 0; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
-        .nav-btns { display: flex; gap: 8px; }
+        .nav-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 
         .ui-container { max-width: 1100px; margin: 1.5rem auto; padding: 0 15px; }
 
         /* Modals */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none; align-items: center; justify-content: center;
-            z-index: 2000; padding: 20px;
-        }
-        .modal {
-            background: var(--white);
-            padding: 30px; border-radius: 4px;
-            max-width: 650px; width: 100%;
-            max-height: 90vh; overflow-y: auto;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal { background: var(--white); padding: 30px; border-radius: 4px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; }
         .modal h2 { font-family: 'Libre Baskerville', serif; margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
         
-        /* Grading Table in Modal */
-        .grade-edit-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-        .grade-edit-table th, .grade-edit-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
-        .grade-edit-table input { width: 60px; text-align: center; border: 1px solid #eee; padding: 4px; }
+        .formula-box { background: #f8fafc; padding: 15px; border-radius: 4px; border-left: 4px solid var(--brand-accent); font-family: monospace; font-size: 0.85rem; margin: 15px 0; line-height: 1.6; }
 
         /* Transcript Area */
-        #transcript-area {
-            background: var(--white);
-            padding: 50px;
-            border: 1px solid var(--border-color);
-            position: relative;
-        }
-
-        .transcript-header {
-            text-align: center; margin-bottom: 30px;
-            border-bottom: 3px double var(--brand-primary);
-            padding-bottom: 15px;
-        }
+        #transcript-area { background: var(--white); padding: 50px; border: 1px solid var(--border-color); position: relative; }
+        .transcript-header { text-align: center; margin-bottom: 30px; border-bottom: 3px double var(--brand-primary); padding-bottom: 15px; }
         .transcript-header h2 { font-family: 'Libre Baskerville', serif; font-size: 1.8rem; margin: 0; text-transform: uppercase; }
 
         /* Profile Details */
-        .profile-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 12px 40px; margin-bottom: 30px;
-        }
+        .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 40px; margin-bottom: 30px; }
         .profile-item { display: flex; flex-direction: column; border-bottom: 1px solid #edf2f7; padding: 4px 0; }
         .profile-label { font-weight: 800; font-size: 0.75rem; color: #000; text-transform: uppercase; margin-bottom: 2px; }
-        .profile-val { 
-            font-size: 0.85rem; border: none; background: transparent; 
-            font-weight: 500; color: #4a5568; width: 100%;
-        }
+        .profile-val { font-size: 0.85rem; border: none; background: transparent; font-weight: 500; color: #4a5568; width: 100%; }
         .profile-val::placeholder { color: rgba(0, 0, 0, 0.3); font-weight: 400; }
 
-        /* Table Records */
+        /* Records Table */
         .table-wrap { overflow-x: auto; }
         .records-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .records-table th { background: #f8fafc; border: 1px solid var(--border-color); padding: 10px; font-size: 0.7rem; text-transform: uppercase; }
         .records-table td { border: 1px solid var(--border-color); padding: 8px; font-size: 0.85rem; }
-        
-        /* Year Change Logic - Double line color matching table borders */
         .year-divider td { border-top: 4px double var(--border-color) !important; }
 
         .records-table input, .records-table select { width: 100%; border: none; background: transparent; font-family: inherit; }
 
-        /* Results Summary */
-        .summary-box {
-            margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr);
-            border-top: 2px solid var(--brand-primary); padding-top: 20px;
-        }
+        /* Summary Box */
+        .summary-box { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--brand-primary); padding-top: 20px; }
         .summary-item { text-align: center; }
         .summary-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #000; }
         .summary-val { font-size: 1.3rem; font-weight: 800; }
 
-        .disclaimer {
-            margin-top: 50px; font-size: 0.65rem; font-style: italic;
-            color: #a0aec0; text-align: center; border-top: 1px solid #eee; padding-top: 10px;
-        }
+        .disclaimer { margin-top: 50px; font-size: 0.65rem; font-style: italic; color: #a0aec0; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
 
         /* UI Buttons */
         .action-bar { margin: 1rem 0; display: flex; gap: 10px; justify-content: flex-end; }
         .btn { padding: 8px 16px; cursor: pointer; font-weight: 600; border-radius: 4px; border: 1px solid transparent; font-size: 0.8rem; transition: 0.2s; }
         .btn-dark { background: var(--brand-primary); color: white; }
+        .btn-import { background: #ed8936; color: white; }
         .btn-pdf { background: #2f855a; color: white; }
         .btn-add { background: #f7fafc; color: var(--brand-accent); width: 100%; margin-top: 10px; border: 1px dashed var(--border-color); }
 
-        /* Responsiveness */
-        @media (max-width: 768px) {
-            .profile-grid { grid-template-columns: 1fr; }
-            #transcript-area { padding: 25px; }
-            .summary-box { grid-template-columns: 1fr; gap: 20px; }
-        }
-
-        @media print {
-            .no-print { display: none !important; }
-            #transcript-area { border: none !important; padding: 0 !important; }
-        }
+        @media (max-width: 768px) { .profile-grid { grid-template-columns: 1fr; } .summary-box { grid-template-columns: 1fr; gap: 20px; } }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body onload="openModal('instrModal')">
 
-<!-- Instructions Modal -->
+<input type="file" id="fileInput" style="display:none;" accept=".csv, .xlsx, .xls" onchange="handleFile(event)">
+
 <div class="modal-overlay" id="instrModal">
     <div class="modal">
         <h2>System Guidelines & Formulas</h2>
@@ -144,45 +88,59 @@
             <p><strong>1. Grade:</strong> The specific letter grade earned for each module.</p>
             <p><strong>2. Credit:</strong> Verify module credits via your degree handbook or department.</p>
             <p><strong>3. Grade PTS:</strong> Represents Quality Points (Grade Value × Credits).</p>
-            <p><strong>4. Grading System:</strong> You may customize the GPA values by clicking "Grading System" in the menu.</p>
-            <p><strong>5. Dividers:</strong> A double-line divider appears automatically when the "Year" changes.</p>
+            <p><strong>4. Grading System:</strong> Customise the GPA values via the navbar menu.</p>
             
-            <div style="background: #f8fafc; padding: 15px; border-left: 4px solid var(--brand-accent); font-family: monospace; margin: 15px 0;">
+            <div class="formula-box">
                 • Total Credit Earned = Σ(Credits)<br>
                 • Total Quality Points = Σ(Grade Points × Credits)<br>
                 • Cumulative GPA = Total Quality Points / Total Credit Earned
             </div>
 
             <p><strong>Note:</strong> Data is processed locally. We do not store your information.</p>
-            <p style="font-size: 0.75rem; color: #e53e3e;"><strong>Disclaimer:</strong> This is an unofficial document generated for academic planning purposes only.</p>
+            <p style="font-size: 0.75rem; color: #e53e3e;"><strong>Disclaimer:</strong> This document is generated for academic planning purposes only.</p>
         </div>
         <button class="btn btn-dark" style="width:100%; margin-top:20px;" onclick="closeModal('instrModal')">Acknowledge & Enter</button>
     </div>
 </div>
 
-<!-- Grading System Modal -->
+<div class="modal-overlay" id="importModal">
+    <div class="modal">
+        <h2>Import Instructions</h2>
+        <p style="font-size: 0.95rem;">To bulk upload your results, ensure your Excel or CSV file contains a <strong>Header Row</strong> with the following names:</p>
+        <ul style="font-size: 0.9rem; color: #444;">
+            <li><strong>Module Name</strong> (Compulsory)</li>
+            <li><strong>Result</strong> (Compulsory - e.g., A, B+, C)</li>
+            <li><strong>Year</strong> (Optional)</li>
+            <li><strong>Semester</strong> (Optional)</li>
+            <li><strong>Credits</strong> (Optional - defaults to 3)</li>
+        </ul>
+        <div style="background: #fff8f1; padding: 10px; border: 1px solid #fbd38d; border-radius: 4px; font-size: 0.85rem; margin-bottom: 20px;">
+            💡 <strong>Tip:</strong> The system will automatically sort your data by Year and Semester after upload.
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-import" style="flex: 1;" onclick="document.getElementById('fileInput').click(); closeModal('importModal');">Choose File & Upload</button>
+            <button class="btn btn-dark" style="flex: 1;" onclick="closeModal('importModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="gradeModal">
     <div class="modal">
         <h2>Grading System Management</h2>
-        <p style="font-size: 0.85rem; color: #666;">Default system used by most universities. Unlock to customize values.</p>
-        
-        <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; margin: 10px 0;">
+        <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; margin-bottom: 15px;">
             <input type="checkbox" id="lockScale" checked onchange="toggleGradeLock()"> Lock Default System
         </label>
-
-        <table class="grade-edit-table">
-            <thead><tr><th>Grade</th><th>Value</th><th>Grade</th><th>Value</th></tr></thead>
-            <tbody id="gradeTableBody">
-                <!-- Javascript populated -->
-            </tbody>
+        <table style="width:100%; border-collapse: collapse;" id="gradeTable">
+            <tbody id="gradeTableBody"></tbody>
         </table>
-        <button class="btn btn-dark" style="width:100%;" onclick="closeModal('gradeModal')">Save & Apply</button>
+        <button class="btn btn-dark" style="width:100%; margin-top: 15px;" onclick="closeModal('gradeModal')">Save & Apply</button>
     </div>
 </div>
 
 <nav class="navbar no-print">
     <h1>Transcript Generator</h1>
     <div class="nav-btns">
+        <button class="btn btn-import" onclick="openModal('importModal')">Import Results</button>
         <button class="btn" style="background:transparent; color:white; border:1px solid white;" onclick="openModal('gradeModal')">Grading System</button>
         <button class="btn" style="background:transparent; color:white; border:1px solid white;" onclick="openModal('instrModal')">Instructions</button>
     </div>
@@ -222,16 +180,7 @@
                         <th width="12%">Grade PTS</th>
                     </tr>
                 </thead>
-                <tbody id="recordBody">
-                    <tr class="module-row">
-                        <td><input type="text" class="year-in" placeholder="Year 1" oninput="calc()"></td>
-                        <td><input type="text" placeholder="Semester 1"></td>
-                        <td><input type="text" placeholder="Financial Accounting I"></td>
-                        <td><select class="grade-sel" onchange="calc()"></select></td>
-                        <td><input type="number" class="cred-in" value="3" oninput="calc()"></td>
-                        <td class="gp-cell" style="text-align:center; font-weight:700;">12.0</td>
-                    </tr>
-                </tbody>
+                <tbody id="recordBody"></tbody>
             </table>
         </div>
 
@@ -247,24 +196,20 @@
         </div>
 
         <div class="disclaimer">
-            This document is not an official university transcript. It has been generated under the request of 
-            <span id="disclaim-name">[Student Name]</span> by an online transcript generator for academic planning purposes only.
+            This document is not an official university transcript. It has been generated under the request of <span id="disclaim-name">Kasun Nirmal Herath</span> by an online transcript generator.
         </div>
     </div>
 </div>
 
 <script>
-    let gradingScale = {
-        "A+": 4.0, "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7,
-        "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "E": 0.0, "F": 0.0
-    };
+    let gradingScale = { "A+": 4.0, "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7, "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "E": 0.0, "F": 0.0 };
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function toggleGradeLock() {
         const locked = document.getElementById('lockScale').checked;
-        document.querySelectorAll('.grade-edit-table input').forEach(i => i.disabled = locked);
+        document.querySelectorAll('#gradeTableBody input').forEach(i => i.disabled = locked);
     }
 
     function initGradingUI() {
@@ -273,64 +218,74 @@
         const keys = Object.keys(gradingScale);
         for(let i=0; i<keys.length; i+=2) {
             const k1 = keys[i], k2 = keys[i+1] || "";
-            let row = `<tr>
-                <td>${k1}</td><td><input type="number" step="0.1" value="${gradingScale[k1]}" oninput="updateScale('${k1}', this.value)" disabled></td>
-                <td>${k2}</td><td>${k2 ? `<input type="number" step="0.1" value="${gradingScale[k2]}" oninput="updateScale('${k2}', this.value)" disabled>` : ''}</td>
+            body.innerHTML += `<tr>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${k1}</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;"><input type="number" step="0.1" value="${gradingScale[k1]}" oninput="gradingScale['${k1}']=parseFloat(this.value);calc();" disabled style="width:60px;"></td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${k2}</td>
+                <td style="border:1px solid #cbd5e1; padding:8px;">${k2 ? `<input type="number" step="0.1" value="${gradingScale[k2]}" oninput="gradingScale['${k2}']=parseFloat(this.value);calc();" disabled style="width:60px;">` : ''}</td>
             </tr>`;
-            body.innerHTML += row;
         }
-        updateSelects();
     }
 
-    function updateScale(key, val) { gradingScale[key] = parseFloat(val) || 0; calc(); }
-
-    function updateSelects() {
-        document.querySelectorAll('.grade-sel').forEach(sel => {
-            const current = sel.value;
-            sel.innerHTML = Object.keys(gradingScale).map(k => `<option value="${k}">${k}</option>`).join('');
-            if(current) sel.value = current;
-        });
-    }
-
-    function addRow() {
+    function addRow(data = {}) {
         const tr = document.createElement('tr');
         tr.className = "module-row";
         tr.innerHTML = `
-            <td><input type="text" class="year-in" placeholder="..." oninput="calc()"></td>
-            <td><input type="text" placeholder="..."></td>
-            <td><input type="text" placeholder="..."></td>
-            <td><select class="grade-sel" onchange="calc()">${Object.keys(gradingScale).map(k => `<option value="${k}">${k}</option>`).join('')}</select></td>
-            <td><input type="number" class="cred-in" value="3" oninput="calc()"></td>
+            <td><input type="text" class="year-in" value="${data.Year || ''}" placeholder="Year 1" oninput="calc()"></td>
+            <td><input type="text" value="${data.Semester || ''}" placeholder="Semester 1"></td>
+            <td><input type="text" value="${data.Module || ''}" placeholder="Module Name"></td>
+            <td><select class="grade-sel" onchange="calc()">${Object.keys(gradingScale).map(k => `<option value="${k}" ${data.Result === k ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
+            <td><input type="number" class="cred-in" value="${data.Credits || 3}" oninput="calc()"></td>
             <td class="gp-cell" style="text-align:center; font-weight:700;">0.0</td>
         `;
         document.getElementById('recordBody').appendChild(tr);
         calc();
     }
 
+    function handleFile(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const data = evt.target.result;
+            const workbook = XLSX.read(data, {type: 'binary'});
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet);
+
+            const mapped = json.map(row => {
+                const find = (arr) => Object.keys(row).find(k => arr.some(a => k.toLowerCase().includes(a.toLowerCase())));
+                return {
+                    Year: row[find(['year', 'yr'])] || '',
+                    Semester: row[find(['semester', 'sem', 's '])] || '',
+                    Module: row[find(['module', 'subject', 'course'])] || 'Unknown Module',
+                    Result: String(row[find(['result', 'grade'])] || 'F').trim().toUpperCase(),
+                    Credits: parseFloat(row[find(['credit'])] || 3)
+                };
+            }).sort((a,b) => String(a.Year).localeCompare(String(b.Year)) || String(a.Semester).localeCompare(String(b.Semester)));
+
+            document.getElementById('recordBody').innerHTML = '';
+            mapped.forEach(addRow);
+        };
+        reader.readAsBinaryString(file);
+    }
+
     function calc() {
-        let credits = 0; let qp = 0;
+        let credits = 0, qp = 0;
         const rows = document.querySelectorAll('.module-row');
         let lastYear = "";
-
-        rows.forEach((row, index) => {
-            const currentYear = row.querySelector('.year-in').value.trim();
-            if (index > 0 && currentYear !== "" && currentYear !== lastYear) row.classList.add('year-divider');
-            else row.classList.remove('year-divider');
-            lastYear = currentYear;
-
-            const gradeKey = row.querySelector('.grade-sel').value;
-            const gradeVal = gradingScale[gradeKey];
+        rows.forEach((row, idx) => {
+            const yr = row.querySelector('.year-in').value.trim();
+            row.classList.toggle('year-divider', idx > 0 && yr !== "" && yr !== lastYear);
+            lastYear = yr;
+            const gv = gradingScale[row.querySelector('.grade-sel').value] || 0;
             const cr = parseFloat(row.querySelector('.cred-in').value) || 0;
-            const rowQP = gradeVal * cr;
-            row.querySelector('.gp-cell').innerText = rowQP.toFixed(1);
-            credits += cr; qp += rowQP;
+            const res = gv * cr;
+            row.querySelector('.gp-cell').innerText = res.toFixed(1);
+            credits += cr; qp += res;
         });
-
         document.getElementById('res-credits').innerText = credits;
         document.getElementById('res-qp').innerText = qp.toFixed(1);
         const gpa = credits > 0 ? (qp / credits) : 0;
         document.getElementById('res-gpa').innerText = gpa.toFixed(4);
-
         let cls = "-";
         if(gpa >= 3.7) cls = "FIRST CLASS HONOURS";
         else if(gpa >= 3.3) cls = "SECOND CLASS UPPER";
@@ -339,28 +294,17 @@
         document.getElementById('res-class').innerText = cls;
     }
 
-    document.getElementById('p-name').addEventListener('input', e => {
-        document.getElementById('disclaim-name').innerText = e.target.value || "[Student Name]";
-    });
+    document.getElementById('p-name').addEventListener('input', e => document.getElementById('disclaim-name').innerText = e.target.value || "Kasun Nirmal Herath");
 
     function generatePDF() {
-        const element = document.getElementById('transcript-area');
-        const name = document.getElementById('p-name').value || 'Transcript';
-        const addBtn = document.getElementById('add-btn');
-        addBtn.style.display = 'none';
-
-        const opt = {
-            margin: 0.3, filename: `${name.replace(/\s+/g, '_')}_Report.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 4, useCORS: true },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(element).save().then(() => { addBtn.style.display = 'block'; });
+        const el = document.getElementById('transcript-area');
+        const btn = document.getElementById('add-btn');
+        btn.style.display = 'none';
+        html2pdf().set({ margin: 0.3, filename: 'Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
     }
 
     initGradingUI();
-    calc();
+    addRow();
 </script>
 
 </body>
