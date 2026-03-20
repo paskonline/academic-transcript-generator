@@ -47,8 +47,13 @@
         .modal h2 { font-family: 'Libre Baskerville', serif; color: var(--brand-primary); border-bottom: 3px solid var(--brand-accent); padding-bottom: 10px; margin-top: 0; font-size: 1.4rem; }
         .modal h3 { font-size: 1rem; margin-top: 20px; color: var(--brand-primary); font-weight: 800; text-transform: uppercase; }
         .modal p { line-height: 1.6; font-size: 0.9rem; margin-bottom: 12px; color: #4a5568; }
-        .modal ul { padding-left: 20px; }
-        .modal li { margin-bottom: 8px; font-size: 0.9rem; }
+        
+        .guide-step { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .guide-step strong { color: var(--brand-primary); display: block; margin-bottom: 5px; }
+        
+        .excel-preview { width: 100%; border-collapse: collapse; margin: 10px 0; font-family: monospace; font-size: 0.8rem; }
+        .excel-preview th { background: #e2e8f0; border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+        .excel-preview td { border: 1px solid #cbd5e1; padding: 8px; background: white; }
 
         /* Transcript Area */
         #transcript-area { background: var(--white); padding: 50px; border: 1px solid var(--border-color); position: relative; }
@@ -100,6 +105,7 @@
 
 <input type="file" id="fileInput" style="display:none;" accept=".csv, .xlsx, .xls" onchange="handleFile(event)">
 
+<!-- Main Instructions Modal -->
 <div class="modal-overlay" id="instrModal">
     <div class="modal">
         <h2>How to Use the Transcript Generator</h2>
@@ -109,7 +115,7 @@
         <p><strong>2. Change the Grading System:</strong> If your university/institution uses a specific grading system, you can change it via the "Grading System" button. Unless you change it, your GPA is calculated using the default system.</p>
         
         <p><strong>3. Enter Results:</strong> Use the <strong>"+ Add New Module Row"</strong> button to enter your grades manually, or use the <strong>"Import"</strong> button to upload an existing file.</p>
-        <ul>
+        <ul style="padding-left: 20px;">
             <li><strong>Credit:</strong> Find the credit for each module by checking your module handbooks or contacting the department/lecturer.</li>
             <li><strong>Result:</strong> Add your result for each module as issued by the examination department of your university.</li>
         </ul>
@@ -122,45 +128,77 @@
     </div>
 </div>
 
+<!-- Import Modal with "Read More" -->
 <div class="modal-overlay" id="importModal">
     <div class="modal">
         <h2>Import Data Instructions</h2>
-        <p>You can bulk-upload your academic results using an Excel or CSV file.</p>
+        <p>You can bulk-upload your academic results using an Excel (.xlsx, .xls) or CSV file.</p>
         
         <div style="background: #fff8f1; padding: 15px; border: 1px solid #fbd38d; border-radius: 4px; margin-bottom: 20px;">
             <p style="margin:0; font-weight: 700; color: #c05621;">⚠️ Compulsory Headers:</p>
-            <p style="margin:5px 0 0 0; font-size: 0.95rem;">Your file <strong>MUST</strong> include columns named <strong>"Module Name"</strong> and <strong>"Result"</strong>.</p>
+            <p style="margin:5px 0 0 0; font-size: 0.95rem;">Your file <strong>MUST</strong> include columns named exactly <strong>"Module Name"</strong> and <strong>"Result"</strong>.</p>
         </div>
 
-        <p>Other columns like <strong>"Year"</strong>, <strong>"Semester"</strong>, and <strong>"Credits"</strong> are optional. You can manually update these details in the table after the upload is complete.</p>
+        <button class="btn btn-dark" style="width:100%; font-size: 0.75rem; margin-bottom: 15px;" onclick="openModal('bulkGuideModal')">📖 Read more for bulk upload guide</button>
 
-        <div style="display: flex; gap: 10px; margin-top: 25px;">
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="btn btn-import" style="flex: 2;" onclick="document.getElementById('fileInput').click(); closeModal('importModal');">Select File & Upload</button>
             <button class="btn btn-dark" style="flex: 1;" onclick="closeModal('importModal')">Cancel</button>
         </div>
     </div>
 </div>
 
+<!-- Detailed Bulk Upload Guide Modal -->
+<div class="modal-overlay" id="bulkGuideModal">
+    <div class="modal" style="max-width: 600px;">
+        <h2>Bulk Upload: Step-by-Step Guide</h2>
+        <p>Follow this format to ensure the system understands your file perfectly.</p>
+        
+        <div class="guide-step">
+            <strong>Step 1: Supported Formats</strong>
+            The system only supports <strong>CSV</strong> or <strong>Excel (.xlsx, .xls)</strong> files.
+        </div>
+
+        <div class="guide-step">
+            <strong>Step 2: Set Your Headers</strong>
+            The first row of your file must contain these specific header names. Do not change the letters or naming as the system uses them to identify data.
+            <br><br>
+            
+            <table class="excel-preview">
+                <tr><th>Year</th><th>Semester</th><th>Module Name</th><th>Result</th><th>Credits</th></tr>
+                <tr><td>Year 1</td><td>Sem 1</td><td>Accounting</td><td>A</td><td>3</td></tr>
+            </table>
+        </div>
+
+        <div class="guide-step">
+            <strong>Step 3: Compulsory vs Optional</strong>
+            <ul>
+                <li><strong>Module Name & Result:</strong> MANDATORY. The system cannot calculate your GPA without these.</li>
+                <li><strong>Year & Semester:</strong> OPTIONAL. It is better to add them for automatic sorting, but you can also manually update them after the upload.</li>
+                <li><strong>Credits:</strong> OPTIONAL. If not provided, the system defaults to 3 credits.</li>
+            </ul>
+        </div>
+
+        <button class="btn btn-dark" style="width:100%;" onclick="closeModal('bulkGuideModal')">Got it</button>
+    </div>
+</div>
+
+<!-- Academic Guide Modal -->
 <div class="modal-overlay" id="gpaInfoModal">
     <div class="modal">
         <h2>Academic Guide</h2>
         <h3>What is GPA?</h3>
         <p>The Grade Point Average (GPA) is a standardized numerical representation of your academic performance, typically on a 4.0 scale.</p>
-
         <h3>Why is it important?</h3>
         <p>In Sri Lanka, your final GPA determines your degree classification (e.g., First Class, Second Upper). It is also a primary filter used for postgraduate admissions and corporate recruitment.</p>
-
         <div style="background: #f8fafc; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); font-family: 'Libre Baskerville', serif; font-size: 1.1rem; text-align: center; margin: 15px 0; font-style: italic;">
             GPA = Σ (Grade Points × Credits) / Total Credits
-        </div>
-
-        <div style="background: #fffde7; border-left: 4px solid #fbc02d; padding: 15px; font-size: 0.85rem; font-style: italic; margin-top: 20px;">
-            <strong>💡 Pro-Tip:</strong> Use this calculator to simulate your "target grades" for upcoming exams so you can manage your academic workload effectively.
         </div>
         <button class="btn btn-dark" style="width:100%; margin-top:25px;" onclick="closeModal('gpaInfoModal')">Close</button>
     </div>
 </div>
 
+<!-- Grading Modal -->
 <div class="modal-overlay" id="gradeModal">
     <div class="modal">
         <h2>Grading System Settings</h2>
@@ -176,8 +214,8 @@
     <h1>Transcript Generator</h1>
     <div class="nav-btns">
         <button class="btn btn-nav btn-import" onclick="openModal('importModal')">Import Results</button>
-        <button class="btn btn-nav" style="background:transparent; color:white; border:1px solid white;" onclick="openModal('gradeModal')">Grading System</button>
-        <button class="btn btn-nav" style="background:transparent; color:white; border:1px solid white;" onclick="openModal('instrModal')">Instructions</button>
+        <button class="btn btn-nav btn-outline" onclick="openModal('gradeModal')">Grading System</button>
+        <button class="btn btn-nav btn-outline" onclick="openModal('instrModal')">Instructions</button>
         <button class="btn btn-nav btn-dark btn-guide" style="border: 1px solid #4a5568;" onclick="openModal('gpaInfoModal')">Academic Guide</button>
     </div>
 </nav>
@@ -287,7 +325,13 @@
             const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
             const mapped = json.map(row => {
                 const find = (arr) => Object.keys(row).find(k => arr.some(a => k.toLowerCase().includes(a.toLowerCase())));
-                return { Year: row[find(['year'])] || '', Semester: row[find(['semester', 'sem'])] || '', Module: row[find(['module'])] || 'Unknown', Result: String(row[find(['result', 'grade'])] || 'F').trim().toUpperCase(), Credits: parseFloat(row[find(['credit'])] || 3) };
+                return { 
+                    Year: row[find(['year'])] || '', 
+                    Semester: row[find(['semester', 'sem'])] || '', 
+                    Module: row[find(['module'])] || 'Unknown', 
+                    Result: String(row[find(['result', 'grade'])] || 'F').trim().toUpperCase(), 
+                    Credits: parseFloat(row[find(['credit'])] || 3) 
+                };
             });
             document.getElementById('recordBody').innerHTML = '';
             mapped.forEach(addRow);
@@ -328,7 +372,7 @@
         const el = document.getElementById('transcript-area');
         const btn = document.getElementById('add-btn');
         btn.style.display = 'none';
-        html2pdf().set({ margin: 0.3, filename: 'Academic_Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
+        html2pdf().set({ margin: 0.3, filename: 'Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
     }
 
     initGradingUI();
