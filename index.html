@@ -18,12 +18,13 @@
             --white: #ffffff;
             --success: #2f855a;
             --warning: #ed8936;
+            --danger: #e53e3e;
         }
 
         * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-canvas); color: var(--text-main); margin: 0; padding: 0; }
 
-        /* Navigation - Optimized for Mobile */
+        /* Navigation */
         .navbar { 
             background: var(--brand-primary); color: white; padding: 1.2rem; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -49,8 +50,6 @@
         .modal p { line-height: 1.6; font-size: 0.9rem; margin-bottom: 12px; color: #4a5568; }
         
         .guide-step { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .guide-step strong { color: var(--brand-primary); display: block; margin-bottom: 5px; }
-        
         .excel-preview { width: 100%; border-collapse: collapse; margin: 10px 0; font-family: monospace; font-size: 0.8rem; }
         .excel-preview th { background: #e2e8f0; border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
         .excel-preview td { border: 1px solid #cbd5e1; padding: 8px; background: white; }
@@ -74,6 +73,9 @@
         .records-table td { border: 1px solid var(--border-color); padding: 8px; font-size: 0.85rem; }
         .year-divider td { border-top: 4px double var(--border-color) !important; }
         .records-table input, .records-table select { width: 100%; border: none; background: transparent; font-family: inherit; }
+
+        /* Action Buttons for rows */
+        .btn-row-del { color: var(--danger); background: none; border: none; font-weight: 900; cursor: pointer; font-size: 1rem; padding: 0 5px; }
 
         /* Summary */
         .summary-box { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--brand-primary); padding-top: 20px; }
@@ -105,7 +107,6 @@
 
 <input type="file" id="fileInput" style="display:none;" accept=".csv, .xlsx, .xls" onchange="handleFile(event)">
 
-<!-- Main Instructions Modal -->
 <div class="modal-overlay" id="instrModal">
     <div class="modal">
         <h2>How to Use the Transcript Generator</h2>
@@ -128,7 +129,6 @@
     </div>
 </div>
 
-<!-- Import Modal with "Read More" -->
 <div class="modal-overlay" id="importModal">
     <div class="modal">
         <h2>Import Data Instructions</h2>
@@ -148,7 +148,6 @@
     </div>
 </div>
 
-<!-- Detailed Bulk Upload Guide Modal -->
 <div class="modal-overlay" id="bulkGuideModal">
     <div class="modal" style="max-width: 600px;">
         <h2>Bulk Upload: Step-by-Step Guide</h2>
@@ -163,7 +162,6 @@
             <strong>Step 2: Set Your Headers</strong>
             The first row of your file must contain these specific header names. Do not change the letters or naming as the system uses them to identify data.
             <br><br>
-            
             <table class="excel-preview">
                 <tr><th>Year</th><th>Semester</th><th>Module Name</th><th>Result</th><th>Credits</th></tr>
                 <tr><td>Year 1</td><td>Sem 1</td><td>Accounting</td><td>A</td><td>3</td></tr>
@@ -172,9 +170,9 @@
 
         <div class="guide-step">
             <strong>Step 3: Compulsory vs Optional</strong>
-            <ul>
-                <li><strong>Module Name & Result:</strong> MANDATORY. The system cannot calculate your GPA without these.</li>
-                <li><strong>Year & Semester:</strong> OPTIONAL. It is better to add them for automatic sorting, but you can also manually update them after the upload.</li>
+            <ul style="padding-left: 20px;">
+                <li><strong>Module Name & Result:</strong> MANDATORY. System cannot calculate GPA without these.</li>
+                <li><strong>Year & Semester:</strong> OPTIONAL. Recommended for automatic sorting, but can be updated manually.</li>
                 <li><strong>Credits:</strong> OPTIONAL. If not provided, the system defaults to 3 credits.</li>
             </ul>
         </div>
@@ -183,14 +181,13 @@
     </div>
 </div>
 
-<!-- Academic Guide Modal -->
 <div class="modal-overlay" id="gpaInfoModal">
     <div class="modal">
         <h2>Academic Guide</h2>
         <h3>What is GPA?</h3>
-        <p>The Grade Point Average (GPA) is a standardized numerical representation of your academic performance, typically on a 4.0 scale.</p>
+        <p>Grade Point Average (GPA) is a standardized numerical representation of academic performance, typically on a 4.0 scale.</p>
         <h3>Why is it important?</h3>
-        <p>In Sri Lanka, your final GPA determines your degree classification (e.g., First Class, Second Upper). It is also a primary filter used for postgraduate admissions and corporate recruitment.</p>
+        <p>In Sri Lanka, your final GPA determines your degree classification (e.g., First Class, Second Upper). It is also used for postgraduate admissions and recruitment.</p>
         <div style="background: #f8fafc; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color); font-family: 'Libre Baskerville', serif; font-size: 1.1rem; text-align: center; margin: 15px 0; font-style: italic;">
             GPA = Σ (Grade Points × Credits) / Total Credits
         </div>
@@ -198,7 +195,6 @@
     </div>
 </div>
 
-<!-- Grading Modal -->
 <div class="modal-overlay" id="gradeModal">
     <div class="modal">
         <h2>Grading System Settings</h2>
@@ -252,6 +248,7 @@
                         <th width="12%">Grade</th>
                         <th width="10%">Credits</th>
                         <th width="12%">Grade PTS</th>
+                        <th width="40px" class="no-print"></th>
                     </tr>
                 </thead>
                 <tbody id="recordBody"></tbody>
@@ -300,8 +297,14 @@
             <td><select class="grade-sel" onchange="calc()">${Object.keys(gradingScale).map(k => `<option value="${k}" ${data.Result === k ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
             <td><input type="number" class="cred-in" value="${data.Credits || 3}" oninput="calc()"></td>
             <td class="gp-cell" style="text-align:center; font-weight:800;">0.0</td>
+            <td class="no-print" style="text-align:center;"><button class="btn-row-del" onclick="deleteRow(this)">✕</button></td>
         `;
         document.getElementById('recordBody').appendChild(tr);
+        calc();
+    }
+
+    function deleteRow(btn) {
+        btn.closest('tr').remove();
         calc();
     }
 
@@ -372,7 +375,7 @@
         const el = document.getElementById('transcript-area');
         const btn = document.getElementById('add-btn');
         btn.style.display = 'none';
-        html2pdf().set({ margin: 0.3, filename: 'Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
+        html2pdf().set({ margin: 0.3, filename: 'Academic_Transcript.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4 }, jsPDF: { format: 'a4', orientation: 'portrait' } }).from(el).save().then(() => btn.style.display = 'block');
     }
 
     initGradingUI();
